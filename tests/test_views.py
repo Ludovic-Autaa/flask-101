@@ -33,7 +33,7 @@ class TestViews(TestCase):
         response = self.client.delete("/api/v1/products/1")
         self.assertEqual(response.status_code, 204)
 
-    def test_D_create_product(self):
+    def test_E_create_product(self):
         print('test_create_product')
 
         product_to_create = {'name': 'Git Up and Running'}
@@ -41,5 +41,8 @@ class TestViews(TestCase):
         response = self.client.post("/api/v1/products",
                                     data=json.dumps(product_to_create),
                                     content_type='application/json')
-        self.assertEqual(response.status_code, 201)
 
+        product_created = response.json
+
+        self.assertEqual(response.status_code, 201)
+        self.assertIsInstance(product_created['id'], int)
