@@ -1,5 +1,7 @@
 from flask_testing import TestCase
 from wsgi import app
+from flask import json
+
 
 class TestViews(TestCase):
     def create_app(self):
@@ -24,11 +26,20 @@ class TestViews(TestCase):
     def test_C_del_unknown_product(self):
         print('test_del_unknown_product')
         response = self.client.delete("/api/v1/products/13")
-        self.assertEqual(response.status_code, 204)
+        self.assertEqual(response.status_code, 404)
 
     def test_D_del_known_product(self):
         print('test_del_known_product')
         response = self.client.delete("/api/v1/products/1")
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 204)
 
+    def test_D_create_product(self):
+        print('test_create_product')
+
+        product_to_create = {'name': 'Git Up and Running'}
+
+        response = self.client.post("/api/v1/products",
+                                    data=json.dumps(product_to_create),
+                                    content_type='application/json')
+        self.assertEqual(response.status_code, 201)
 
