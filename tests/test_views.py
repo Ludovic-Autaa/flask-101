@@ -46,3 +46,13 @@ class TestViews(TestCase):
 
         self.assertEqual(response.status_code, 201)
         self.assertIsInstance(product_created['id'], int)
+
+        #print(product_created['id'])
+
+        #response2 = self.client.get("/api/v1/products/" + str(product_created['id']))
+        #product2 = response2.json
+
+        #self.assertEqual(response2.status_code, 200)
+        #self.assertIsEqual(product2['id'], int)
+        #self.assertEqual(product2['id'], product_created['id'])
+

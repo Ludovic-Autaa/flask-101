@@ -20,32 +20,39 @@ def hello():
 
 @app.route('/api/v1/products', methods=['GET'])
 def read_many_products():
-    return  jsonify(PRODUCTS)
+    products = list(PRODUCTS.values())
+
+    return  jsonify(products), 200
 
 @app.route('/api/v1/products/<int:product_id>', methods=['GET'])
 def read_one_product(product_id):
-    if PRODUCTS.get(product_id) is None:
-        return abort(404)
-    else:
-        return jsonify(PRODUCTS[1]), 200
+    product = PRODUCTS.get(product_id)
+    if product is None:
+        abort(404)
+    return jsonify(product), 200
 
 @app.route('/api/v1/products/<int:product_id>', methods=['DELETE'])
 def delete_one_product(product_id):
-    if PRODUCTS.get(product_id) is None:
-        return abort(404)
-    else:
-        del PRODUCTS[product_id]
-        return f'product {product_id} deleted', 204
+    product = PRODUCTS.pop(product_id, None)
+    if product is None:
+        abort(404)
+
+    return '', 204
 
 @app.route('/api/v1/products', methods=['POST'])
 def create_product():
-    req = request.get_json()
+    body_json = request.get_json()
+
+    new_product_name = body_json.get('name')
+
+    if new_product_name is None:
+        abort(422)
 
     new_product_id = next(IDENTIFIER_GENERATOR)
-    new_product_name = req['name']
-
     new_product = {'id': new_product_id, 'name': new_product_name}
 
-    PRODUCTS.update(new_product)
+    PRODUCTS[new_product_id] = new_product
+
+    print(PRODUCTS)
 
     return jsonify(new_product), 201
